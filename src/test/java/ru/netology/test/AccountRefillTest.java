@@ -27,17 +27,17 @@ public class AccountRefillTest {
         dashboard.checkAfterDepositFirstCard(balanceBefore + cash);
     }
 
-//    @Test
-//    void shouldAccountRefillSecondCardByFirst()
-//    {
-//        open("http://localhost:9999");
-//        var loginPage = new LoginPage();
-//        var verificationPage = loginPage.validLogin(DataHelper.getAuthInfo());
-//        var dashboard = verificationPage.validVerify(DataHelper.getVerificationCode());
-//        int balanceBefore = dashboard.getSecondCardBalance();
-//        var depositChangingPage = dashboard.depositSecondByFirstCard();
-//        int cash = 100;
-//        depositChangingPage.transfer(cash);
-//        dashboard.checkAfterDepositSecondCard(balanceBefore + cash);
-//    }
+    @Test
+    void shouldAccountRefillSecondCardByFirst()
+    {
+        open("http://localhost:9999");
+        var loginPage = new LoginPage();
+        var verificationPage = loginPage.validLogin(DataHelper.getAuthInfo());
+        var dashboard = verificationPage.validVerify(DataHelper.getVerificationCode());
+        int balanceBefore = dashboard.getSecondCardBalance();
+        var depositChangingPage = dashboard.depositSecondByFirstCard();
+        int cash = 100;
+        depositChangingPage.transfer(cash);
+        dashboard.checkAfterDepositSecondCard(balanceBefore + cash);
+    }
 }

@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Selenide.$;
 public class DepositChangingPage {
     private SelenideElement amountField = $("[data-test-id=amount] input");
     private SelenideElement fromField = $("[data-test-id=from] input");
-    private SelenideElement transferButton = $("[data-test-id=action-transfer] button");
+    private SelenideElement transferButton = $("[data-test-id=action-transfer]");
     private String sourceCard;
 
     public DepositChangingPage(String _sourceCard) {
