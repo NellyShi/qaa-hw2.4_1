@@ -5,6 +5,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import lombok.val;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
@@ -18,42 +19,36 @@ public class DashboardPage {
     public DashboardPage() {
         $("[data-test-id=dashboard]").shouldBe(Condition.visible);
     }
-    public int getFirstCardBalance() {
-        val text = cards.first().text();
+
+    public int getCardBalance(String last4CardNumber) {
+        var text = cards.findBy(Condition.text(last4CardNumber)).getText();
         return extractBalance(text);
     }
 
-    public int getSecondCardBalance() {
-        val text = cards.last().text();
-        return extractBalance(text);
+    public DepositChangingPage depositCard(String targetCard) {
+        cards.find(text(targetCard.substring(15, 19))).$("button").click();
+        return new DepositChangingPage();
+    }
+
+    public void checkPage() {
+        $("h1").shouldHave(Condition.exactText("Ваши карты"));
+    }
+
+    public void checkDepositCard(String last4CardNumber, int balanceExpected)
+    {
+        for (int i = 0; i < cards.size(); i++) {
+            val text = cards.get(i).text();
+            if (text.contains(last4CardNumber)) {
+                cards.get(i).shouldHave(text(Integer.toString(balanceExpected)));
+                return;
+            }
+        }
     }
 
     private int extractBalance(String text) {
-        val start = text.indexOf(balanceStart);
-        val finish = text.indexOf(balanceFinish);
-        val value = text.substring(start + balanceStart.length(), finish);
+        var start = text.indexOf(balanceStart);
+        var finish = text.indexOf(balanceFinish);
+        var value = text.substring(start + balanceStart.length(), finish);
         return Integer.parseInt(value);
-    }
-
-    public DepositChangingPage depositFistBySecondCard() {
-        depositFirstButton.click();
-        return new DepositChangingPage("5559 0000 0000 0002");
-    }
-
-    public DepositChangingPage depositSecondByFirstCard() {
-        depositSecondButton.click();
-        return new DepositChangingPage("5559 0000 0000 0001");
-    }
-
-    public void checkAfterDepositFirstCard(int balanceExpected)
-    {
-        $("h1").shouldHave(Condition.exactText("Ваши карты"));
-        cards.first().shouldHave(Condition.text(Integer.toString(balanceExpected)));
-    }
-
-    public void checkAfterDepositSecondCard(int balanceExpected)
-    {
-        $("h1").shouldHave(Condition.exactText("Ваши карты"));
-        cards.last().shouldHave(Condition.text(Integer.toString(balanceExpected)));
     }
 }
