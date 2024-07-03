@@ -9,30 +9,56 @@ import static com.codeborne.selenide.Selenide.open;
 
 public class AccountRefillTest {
     @Test
-    void shouldAccountRefillCard() {
-        for (int i = 0; i < DataHelper.getOperations().length; i++) {
-            open("http://localhost:9999");
-            var loginPage = new LoginPage();
-            var verificationPage = loginPage.validLogin(DataHelper.getAuthInfo());
-            var dashboard = verificationPage.validVerify(DataHelper.getVerificationCode());
+    void shouldDepositFirstCard() {
+       open("http://localhost:9999");
+       var loginPage = new LoginPage();
+       var verificationPage = loginPage.validLogin(DataHelper.getAuthInfo());
+       var dashboard = verificationPage.validVerify(DataHelper.getVerificationCode());
 
-            var operation = DataHelper.getOperations()[i];
+        var operation = DataHelper.getOperations()[0];
 
-            int sourceCardBalance = dashboard.getCardBalance(DataHelper.getLastCardNumbers(operation.getSourceCard()));
+        int sourceCardBalance = dashboard.getCardBalance(DataHelper.getLastCardNumbers(operation.getSourceCard()));
 
-            int targetCardBalance = dashboard.getCardBalance(DataHelper.getLastCardNumbers(operation.getTargetCard()));
+        int targetCardBalance = dashboard.getCardBalance(DataHelper.getLastCardNumbers(operation.getTargetCard()));
 
-            var depositChangingPage = dashboard.depositCard(operation.getTargetCard());
+        var depositChangingPage = dashboard.depositCard(operation.getTargetCard());
 
-            depositChangingPage.transfer(operation.getSourceCard(), operation.getAmount());
+        depositChangingPage.transfer(operation.getSourceCard(), operation.getAmount());
 
-            dashboard.checkPage();
+        dashboard.checkPage();
 
-            dashboard.checkDepositCard(DataHelper.getLastCardNumbers(operation.getTargetCard()),
+        dashboard.checkDepositCard(DataHelper.getLastCardNumbers(operation.getTargetCard()),
                     targetCardBalance + operation.getAmount());
 
-            dashboard.checkDepositCard(DataHelper.getLastCardNumbers(operation.getSourceCard()),
+        dashboard.checkDepositCard(DataHelper.getLastCardNumbers(operation.getSourceCard()),
                     sourceCardBalance - operation.getAmount());
-        }
+    }
+
+    @Test
+    void shouldDepositSecondCard() {
+        open("http://localhost:9999");
+        var loginPage = new LoginPage();
+        var verificationPage = loginPage.validLogin(DataHelper.getAuthInfo());
+        var dashboard = verificationPage.validVerify(DataHelper.getVerificationCode());
+
+        var operation = DataHelper.getOperations()[1];
+
+        int sourceCardBalance = dashboard.getCardBalance(DataHelper.getLastCardNumbers(operation.getSourceCard()));
+
+        int targetCardBalance = dashboard.getCardBalance(DataHelper.getLastCardNumbers(operation.getTargetCard()));
+
+        var depositChangingPage = dashboard.depositCard(operation.getTargetCard());
+
+        depositChangingPage.transfer(operation.getSourceCard(), operation.getAmount());
+
+        dashboard.checkPage();
+
+        dashboard.checkDepositCard(DataHelper.getLastCardNumbers(operation.getTargetCard()),
+                targetCardBalance + operation.getAmount());
+
+        dashboard.checkDepositCard(DataHelper.getLastCardNumbers(operation.getSourceCard()),
+                sourceCardBalance - operation.getAmount());
     }
 }
+
+
